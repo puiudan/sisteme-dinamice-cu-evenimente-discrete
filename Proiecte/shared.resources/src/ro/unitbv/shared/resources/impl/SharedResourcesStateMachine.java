@@ -51,7 +51,7 @@ public class SharedResourcesStateMachine extends SharedResourcesPN {
 			petriNet.retrieveTransition("T1").connectToOutputPlace(
 					petriNet.retrievePlace("P2"), "T1 -> P2", "", 1);
 			petriNet.retrieveTransition("T2").connectToOutputPlace(
-					petriNet.retrievePlace("P3"), "T2 -> P3", "", 1);
+					petriNet.retrievePlace("P1"), "T2 -> P3", "", 1);
 			
 
 		} catch (Exception e) {
