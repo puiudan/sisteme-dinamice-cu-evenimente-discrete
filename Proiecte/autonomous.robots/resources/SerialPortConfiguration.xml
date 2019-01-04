@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serialPortConfiguration>
+	<portName>COM18</portName>
+	<baudRate>1200</baudRate>
+	<dataBits>8</dataBits>
+	<stopBits>1</stopBits>
+	<parity>NONE</parity>
+</serialPortConfiguration>
