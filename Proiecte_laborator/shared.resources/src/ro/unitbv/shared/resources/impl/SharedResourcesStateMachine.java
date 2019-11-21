@@ -63,6 +63,7 @@ public class SharedResourcesStateMachine extends SharedResourcesPN {
 
 					@Override
 					protected void callback(PetriNet arg0, Place arg1) {
+						System.out.println("The marking of the place P1 is " +arg1.getMarking());
 						//for positions with display indicators
 						changeIndicatorState("P1",
 								SharedResourcesIndicators.Y3, arg1.getMarking());
@@ -74,6 +75,8 @@ public class SharedResourcesStateMachine extends SharedResourcesPN {
 
 					@Override
 					protected void callback(PetriNet arg0, Place arg1) {
+						System.out.println("The marking of the place P2 is " +arg1.getMarking());
+						
 						//for positions with actuators(led)
 						if (arg1.getMarking() == 1)
 							turnONActuator("P2", SharedResourcesActuators.Y1);

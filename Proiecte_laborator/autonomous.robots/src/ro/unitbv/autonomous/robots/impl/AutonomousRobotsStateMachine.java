@@ -61,11 +61,12 @@ public class AutonomousRobotsStateMachine extends AutonomousRobotsPN {
 			e.printStackTrace();
 		}
 
-		petriNet.retrievePlace(p1).createActivePlaceCallback(1,
+		petriNet.retrievePlace(p1).createPlaceMarkingChangeCallback(
 				new PlaceActionCallback() {
 
 					@Override
 					protected void callback(PetriNet arg0, Place arg1) {
+						System.out.println("The marking of the place p1 is " +arg1.getMarking());
 						turnONActuator(p1, AutonomousRobotsActuators.Y5_GREEN);
 						turnONActuator(p1, AutonomousRobotsActuators.Y5_RED);
 						changeIndicatorState(p1, AutonomousRobotsIndicators.GARAJ,
@@ -73,14 +74,15 @@ public class AutonomousRobotsStateMachine extends AutonomousRobotsPN {
 					}
 				});
 
-		petriNet.retrievePlace(p1).createExitCallback(1,
+		petriNet.retrievePlace(p2).createPlaceMarkingChangeCallback(
 				new PlaceActionCallback() {
 
 					@Override
 					protected void callback(PetriNet arg0, Place arg1) {
-						turnOFFActuator(p1, AutonomousRobotsActuators.Y5_GREEN);
-						turnOFFActuator(p1, AutonomousRobotsActuators.Y5_RED);
-						changeIndicatorState(p1, AutonomousRobotsIndicators.GARAJ,
+						System.out.println("The marking of the place p2 is " +arg1.getMarking());
+						turnOFFActuator(p2, AutonomousRobotsActuators.Y5_GREEN);
+						turnOFFActuator(p2, AutonomousRobotsActuators.Y5_RED);
+						changeIndicatorState(p2, AutonomousRobotsIndicators.GARAJ,
 								6);
 					}
 				});
