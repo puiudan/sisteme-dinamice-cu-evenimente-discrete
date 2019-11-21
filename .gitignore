@@ -4,3 +4,7 @@ Proiecte/manufacturing.system/bin/
 Proiecte/simple.project/CoReMo-Coremo.log
 *.log
 Proiecte/autonomous.robots/bin/
+Proiecte_laborator/autonomous.robots/bin/
+Proiecte_laborator/simple.project/bin/
+Proiecte_laborator/manufacturing.system/bin/
+Proiecte_laborator/shared.resources/bin/
