@@ -47,7 +47,7 @@ public class ManufacturingSystemStateMachine extends ManufacturingSystemPN {
 			petriNet.retrievePlace("P2").connectToOutputTransition(petriNet.retrieveTransition("T2"), "P2 -> T2", "", 1);
 
 			petriNet.retrieveTransition("T1").connectToOutputPlace(petriNet.retrievePlace("P2"), "T1 -> P2", "", 1);
-			petriNet.retrieveTransition("T2").connectToOutputPlace(petriNet.retrievePlace("P3"), "T2 -> P3", "", 1);
+			petriNet.retrieveTransition("T2").connectToOutputPlace(petriNet.retrievePlace("P1"), "T2 -> P3", "", 1);
 
 		} catch (PetriNetException e) {
 			e.printStackTrace();
