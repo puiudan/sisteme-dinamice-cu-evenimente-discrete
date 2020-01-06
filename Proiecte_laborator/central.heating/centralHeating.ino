@@ -1,32 +1,31 @@
-#define PIN_BUTON_F1 19
-#define PIN_BUTON_F2 20
-#define PIN_BUTON_F3 21
-#define PIN_FUNCTIE_INCALZIRE_AMBIENTALA 18
-#define PIN_FUNCTIE_INCALZIRE_APA 17
-#define PIN_SENZOR_PREZENTA_FLACARA 4
+#define PIN_BUTON_F1 2
+#define PIN_BUTON_F2 3
+#define PIN_BUTON_F3 4
+#define PIN_FUNCTIE_INCALZIRE_AMBIENTALA 41
+#define PIN_FUNCTIE_INCALZIRE_APA 45
+#define PIN_SENZOR_PREZENTA_FLACARA 31
 #define PIN_SENZOR_PRESIUNE_GAZ 16
-#define PIN_SENZOR_TEMPERATURA_APA_DIN_CIRCUITUL_DE_CALDURA 1
-#define PIN_SENZOR_TEMPERATURA_AMBIENTALA 2
-#define PIN_SERVOVANA_GAZ 2
-#define PIN_GENERATOR_SCANTEIE 3
-#define PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA 5
-#define PIN_7_SEG_DA 6
-#define PIN_7_SEG_DB 7
-#define PIN_7_SEG_DC 8
-#define PIN_7_SEG_DD 9
-#define PIN_7_SEG_SELECT_TEMPARATURA_APA_DIN_CIRCUITUL_DE_CALDURA_HIGH 10
-#define PIN_7_SEG_SELECT_TEMPARATURA_APA_DIN_CIRCUITUL_DE_CALDURA_LOW 11
-#define PIN_7_SEG_SELECT_PANOU_DE_COMANDA_HIGH 12
-#define PIN_7_SEG_SELECT_PANOU_DE_COMANDA_LOW 13
-#define PIN_7_SEG_SELECT_TEMPARATURA_AMBIENTALA_HIGH 12
-#define PIN_7_SEG_SELECT_TEMPARATURA_AMBIENTALA_LOW 13
-#define PIN_SENZOR_STARE_ROBINET_APA 22
-#define PIN_LED_I1 23
-#define PIN_LED_I2 24
-#define PIN_LED_I3 25
+#define PIN_SENZOR_TEMPERATURA_APA_DIN_CIRCUITUL_DE_CALDURA 14
+#define PIN_SENZOR_TEMPERATURA_AMBIENTALA 15
+#define PIN_SERVOVANA_GAZ 20
+#define PIN_GENERATOR_SCANTEIE 7
+#define PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA 44
+#define PIN_7_SEG_DA 9
+#define PIN_7_SEG_DB 14
+#define PIN_7_SEG_DC 10
+#define PIN_7_SEG_DD 12
+#define PIN_7_SEG_SELECT_TEMPARATURA_APA_DIN_CIRCUITUL_DE_CALDURA_HIGH 11
+#define PIN_7_SEG_SELECT_TEMPARATURA_APA_DIN_CIRCUITUL_DE_CALDURA_LOW 18
+#define PIN_7_SEG_SELECT_PANOU_DE_COMANDA_HIGH 6
+#define PIN_7_SEG_SELECT_PANOU_DE_COMANDA_LOW 5
+#define PIN_7_SEG_SELECT_TEMPARATURA_AMBIENTALA_HIGH 0
+#define PIN_7_SEG_SELECT_TEMPARATURA_AMBIENTALA_LOW 21
+#define PIN_SENZOR_STARE_ROBINET_APA 53
+#define PIN_LED_I1 15
+#define PIN_LED_I2 17
+#define PIN_LED_I3 8
 
-#define MAX_ADC_VALUE 1023
-#define MAX_TEMPERATURE 99
+void initializareSistem();
 
 bool stareAnterioaraButonF1 = false;
 bool stareAnterioaraButonF2 = false;
@@ -53,9 +52,9 @@ bool stareAnterioaraLedI2 = false;
 bool stareAnterioaraLedI3 = false;
 
 void initPins() {
-  pinMode(PIN_BUTON_F1,INPUT);
-  pinMode(PIN_BUTON_F2,INPUT);
-  pinMode(PIN_BUTON_F3,INPUT);
+  pinMode(PIN_BUTON_F1,INPUT_PULLUP);
+  pinMode(PIN_BUTON_F2,INPUT_PULLUP);
+  pinMode(PIN_BUTON_F3,INPUT_PULLUP);
   pinMode(PIN_FUNCTIE_INCALZIRE_AMBIENTALA,OUTPUT);
   pinMode(PIN_FUNCTIE_INCALZIRE_APA,OUTPUT);
   pinMode(PIN_SENZOR_PREZENTA_FLACARA,INPUT);
@@ -93,7 +92,6 @@ void setFunctieIncalzireAmbientala(bool state){
   if(state)
   {
     digitalWrite(PIN_FUNCTIE_INCALZIRE_AMBIENTALA, HIGH);
-
     if(!stareAnterioaraFunctieIncalzireAmbientala)
       Serial.println("Functia de incalzire ambientala e activa.");
   }
@@ -108,7 +106,7 @@ void setFunctieIncalzireAmbientala(bool state){
 }
 
 void setFunctieIncalzireApa(bool state){
-  
+
   if(state)
   {
     digitalWrite(PIN_FUNCTIE_INCALZIRE_APA, HIGH);
@@ -165,13 +163,15 @@ void setPompaApaACircuituluiDeCaldura(bool state){
   
   if(state)
   {
-    digitalWrite(PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA, HIGH);
+    //digitalWrite(PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA, HIGH);
+    analogWrite(PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA,255);
     if(!stareAnterioaraPompaApaACircuituluiDeCaldura)
       Serial.println("Pompa de apa a circuitului de caldura e pornita.");
   }
   else
   {
-    digitalWrite(PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA, LOW);
+    //digitalWrite(PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA, LOW);
+    analogWrite(PIN_POMPA_APA_A_CIRCUITULUI_DE_CALDURA,0);
     if(stareAnterioaraPompaApaACircuituluiDeCaldura)
       Serial.println("Pompa de apa a circuitului de caldura e oprita.");
   }
@@ -227,24 +227,28 @@ void setIndicatorI3(bool state){
   {
     digitalWrite(PIN_LED_I3, LOW);
     if(stareAnterioaraLedI3)
-      Serial.println("Servovana I3 e inactiva.");
+      Serial.println("Indicatorul I3 e inactiv.");
   }
 
   stareAnterioaraLedI3 = state;
 }
 
-
-
-
 bool getButonF1(){
-   bool stareCurenta = !digitalRead(PIN_BUTON_F1);
-
-  if((!stareAnterioaraButonF1)&&(stareCurenta))
-    Serial.println("S-a apasat butonul F1.");
-
-  stareAnterioaraButonF1 = stareCurenta;
   
-  return stareCurenta;
+  bool stareCurenta1 = !digitalRead(PIN_BUTON_F1);
+  delay(60);
+  bool stareCurenta2 = !digitalRead(PIN_BUTON_F1);
+  
+  if(stareCurenta1 != stareCurenta2)
+    return stareAnterioaraButonF1;
+
+  if((!stareAnterioaraButonF1)&&(stareCurenta1)){
+    Serial.println("S-a apasat butonul F1.");
+  }
+
+  stareAnterioaraButonF1 = stareCurenta1;
+  
+  return stareAnterioaraButonF1;
 }
 
 bool getButonF2(){
@@ -270,45 +274,61 @@ bool getButonF3(){
 }
 
 bool getSenzorPrezentaFlacara(){
-   bool stareCurenta = !digitalRead(PIN_SENZOR_PREZENTA_FLACARA);
+   bool stareCurenta1 = !digitalRead(PIN_SENZOR_PREZENTA_FLACARA);
+   delay(60);
+   bool stareCurenta2 = !digitalRead(PIN_SENZOR_PREZENTA_FLACARA);
 
-  if((!stareAnterioaraSenzorPrezentaFlacara)&&(stareCurenta))
+   if(stareCurenta1 != stareCurenta2)
+    return stareAnterioaraSenzorPrezentaFlacara;
+
+  if((!stareAnterioaraSenzorPrezentaFlacara)&&(stareCurenta1))
     Serial.println("S-a aprins flacara.");
   
-  if((stareAnterioaraSenzorPrezentaFlacara)&&(!stareCurenta))
+  if((stareAnterioaraSenzorPrezentaFlacara)&&(!stareCurenta1))
     Serial.println("S-a stins flacara.");
 
-  stareAnterioaraSenzorPrezentaFlacara = stareCurenta;
+  stareAnterioaraSenzorPrezentaFlacara = stareCurenta1;
   
-  return stareCurenta;
+  return stareCurenta1;
 }
 
 bool getSenzorPresiuneGaz(){
-   bool stareCurenta = !digitalRead(PIN_SENZOR_PRESIUNE_GAZ);
+   bool stareCurenta1 = !digitalRead(PIN_SENZOR_PRESIUNE_GAZ);
+   delay(60);
+   bool stareCurenta2 = !digitalRead(PIN_SENZOR_PRESIUNE_GAZ);
 
-  if((!stareAnterioaraSenzorPresiuneGaz)&&(stareCurenta))
+   if(stareCurenta1 != stareCurenta2)
+    return stareAnterioaraSenzorPresiuneGaz;
+
+  if((!stareAnterioaraSenzorPresiuneGaz)&&(stareCurenta1))
     Serial.println("A crescut presiunea la gaz peste valoarea nominala.");
 
-  if((stareAnterioaraSenzorPresiuneGaz)&&(!stareCurenta))
+  if((stareAnterioaraSenzorPresiuneGaz)&&(!stareCurenta1))
     Serial.println("A scazut presiunea la gaz sub valoarea nominala.");
 
-  stareAnterioaraSenzorPresiuneGaz = stareCurenta;
+  stareAnterioaraSenzorPresiuneGaz = stareCurenta1;
   
-  return stareCurenta;
+  return stareCurenta1;
 }
 
 bool getSenzorStareRobinetApa(){
-   bool stareCurenta = !digitalRead(PIN_SENZOR_STARE_ROBINET_APA);
-
-  if((!stareAnterioaraSenzorStareRobinetApa)&&(stareCurenta))
+  
+  bool stareCurenta1 = !digitalRead(PIN_SENZOR_STARE_ROBINET_APA);
+  delay(60);
+  bool stareCurenta2 = !digitalRead(PIN_SENZOR_STARE_ROBINET_APA);
+  
+  if(stareCurenta1 != stareCurenta2)
+    return stareAnterioaraSenzorStareRobinetApa;
+  
+  if((!stareAnterioaraSenzorStareRobinetApa)&&(stareCurenta1))
     Serial.println("S-a deschis robinetul de apa.");
-
-  if((!stareAnterioaraSenzorStareRobinetApa)&&(stareCurenta))
+  
+  if((stareAnterioaraSenzorStareRobinetApa)&&(!stareCurenta1))
     Serial.println("S-a închis robinetul de apa.");
   
-  stareAnterioaraSenzorStareRobinetApa = stareCurenta;
+  stareAnterioaraSenzorStareRobinetApa = stareCurenta1;
   
-  return stareCurenta;
+  return stareCurenta1;
 }
 
 void set7SegDataLines(int bcdValue) {
@@ -390,9 +410,6 @@ void set7SegDataLines(int bcdValue) {
 
 void setIndicatorTemparaturaApaDinCircuitulDeCaldura(byte value) {
 
-  if(value == stareAnterioaraIndicatorTemparaturaApaDinCircuitulDeCaldura)
-    return;
-
   if(value > 99) {
     Serial.print("Nu se poate seta indicatorul de temperatura apa din circuitul de caldura la valoarea ");
     Serial.print(value);
@@ -400,6 +417,17 @@ void setIndicatorTemparaturaApaDinCircuitulDeCaldura(byte value) {
     
     for(;;);
   }
+  
+  if(value == stareAnterioaraIndicatorTemparaturaApaDinCircuitulDeCaldura)
+    return;
+//  else
+//  {
+//     Serial.print("Indicatorul de temperatura al apei din circuitul de caldura afiseaza ");
+//     Serial.print(value);
+//     Serial.println(".");
+//  }
+
+  stareAnterioaraIndicatorTemparaturaApaDinCircuitulDeCaldura = value;
   
   set7SegDataLines(value%10);
   digitalWrite(PIN_7_SEG_SELECT_TEMPARATURA_APA_DIN_CIRCUITUL_DE_CALDURA_LOW, LOW );
@@ -417,9 +445,6 @@ void setIndicatorTemparaturaApaDinCircuitulDeCaldura(byte value) {
 
 void setIndicatorPanaouComanda(byte value) {
 
-  if(value == stareAnterioaraIndicatorPanaouComanda)
-    return;
-
   if(value > 99) {
     Serial.print("Nu se poate seta indicatorul de pe panoul de comanda la valoarea ");
     Serial.print(value);
@@ -427,6 +452,18 @@ void setIndicatorPanaouComanda(byte value) {
     
     for(;;);
   }
+
+  if(value == stareAnterioaraIndicatorPanaouComanda)
+    return;
+    else
+  {
+     Serial.print("Indicatorul de pe panoul de comanda afiseaza ");
+     Serial.print(value);
+     Serial.println(".");
+  }
+
+  stareAnterioaraIndicatorPanaouComanda = value;
+
   
   set7SegDataLines(value%10);
   digitalWrite(PIN_7_SEG_SELECT_PANOU_DE_COMANDA_LOW, LOW );
@@ -445,9 +482,6 @@ void setIndicatorPanaouComanda(byte value) {
 
 void setIndicatorTemparaturaAmbientala(byte value) {
 
-  if(value == stareAnterioaraIndicatorTemparaturaAmbientala)
-    return;
-
   if(value > 99) {
     Serial.print("Nu se poate seta indicatorul de temperatura ambientala la valoarea ");
     Serial.print(value);
@@ -455,6 +489,18 @@ void setIndicatorTemparaturaAmbientala(byte value) {
     
     for(;;);
   }
+
+  
+  if(value == stareAnterioaraIndicatorTemparaturaAmbientala)
+    return;
+    else
+  {
+     Serial.print("Indicatorul de temperatura ambientala afiseaza ");
+     Serial.print(value);
+     Serial.println(".");
+  }
+
+  stareAnterioaraIndicatorTemparaturaAmbientala = value;
   
   set7SegDataLines(value%10);
   digitalWrite(PIN_7_SEG_SELECT_TEMPARATURA_AMBIENTALA_LOW, LOW );
@@ -472,22 +518,27 @@ void setIndicatorTemparaturaAmbientala(byte value) {
 
 short getTemperaturaApaDinCircuitulDeCaldura()
 {
-  short currentValue = MAX_TEMPERATURE * analogRead(PIN_SENZOR_TEMPERATURA_APA_DIN_CIRCUITUL_DE_CALDURA) / MAX_ADC_VALUE;
+  int currentValue = analogRead(PIN_SENZOR_TEMPERATURA_APA_DIN_CIRCUITUL_DE_CALDURA)/11;;
   
-  if(stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura != currentValue)
+  if((stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura != currentValue)
+      &&(stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura-1 != currentValue)
+      &&(stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura+1 != currentValue)
+      &&(stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura-2 != currentValue)
+      &&(stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura+2 != currentValue))
   {
     Serial.print("Temperatura apei din circuitul de caldura este ");
-  Serial.println(currentValue);
+    Serial.println(currentValue);
+    stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura = currentValue;
   }
-  
-  stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura = currentValue;
-  
-  return currentValue;
+
+  setIndicatorTemparaturaApaDinCircuitulDeCaldura(stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura);
+   
+  return stareAnterioaraSenzorTemperaturaApaDinCircuitulDeCaldura;
 }
 
 short getTemperaturaAmbientala()
 {
-  short currentValue = MAX_TEMPERATURE * analogRead(PIN_SENZOR_TEMPERATURA_AMBIENTALA) / MAX_ADC_VALUE;
+  short currentValue = analogRead(PIN_SENZOR_TEMPERATURA_AMBIENTALA);
   
   if(stareAnterioaraSenzorTemperaturaAmbientala != currentValue)
   {
@@ -668,8 +719,6 @@ bool hasTimer4Elapsed()
   return timer4ElapsedPreviousState;
 }
 
-
-
 void setup() {
   Serial.begin(9600);
   Serial.println("Aplicatia a pornit.");
@@ -679,34 +728,25 @@ void setup() {
   initTimer3();
   initTimer4();
 
+  initializareSistem();
 }
 
 //metode pentru actuatori
-//void setFunctieIncalzireAmbientala(bool state)
+//NOT_OK-> void setFunctieIncalzireAmbientala(bool state)
 //void setFunctieIncalzireApa(bool state)
 //void setServovanaGaz(bool state)
 //void setGeneratorScanteie(bool state)
 //void setPompaApaACircuituluiDeCaldura(bool state)
-//void setIndicatorI1(bool state)
-//void setIndicatorI2(bool state)
 //void setIndicatorI3(bool state)
 
 //metode pentru senzori
 //bool getButonF1()
-//bool getButonF2()
-//bool getButonF3()
 //bool getSenzorPrezentaFlacara()
 //bool getSenzorPresiuneGaz()
 //bool getSenzorStareRobinetApa()
 
-//metode pentru afisoare cu 7 segmente
-//void setIndicatorTemparaturaApaDinCircuitulDeCaldura(byte value)
-//void setIndicatorPanaouComanda(byte value)
-//void setIndicatorTemparaturaAmbientala(byte value)
-
 //metode pentru intrari analogice
 //short getTemperaturaApaDinCircuitulDeCaldura()
-//short getTemperaturaAmbientala()
 
 //metode pentru controlul timerelor
 //void startTimer1(word timeOutInMS) //timeOutInMS intervalul de timp dupa care timerul expira; valori disponibile [500mS - 4000mS]
@@ -716,9 +756,21 @@ void setup() {
 //void startTimer4(byte timeOutInS) //timeOutInMS intervalul de timp dupa care timerul expira; valori disponibile [5S - 255S]
 //bool hasTimer4Elapsed()
 
+//metoda de initializare
+//void initializareSistem(); // se apelează o singura data cand porneste sistemul
+
+
 //Declara starile aici
 
+
+
+void initializareSistem()
+{
+  //initialiseaza sistemul aici
+
+}
+
 void loop() {
-  //Rezolva problema aici
-  
+  //rezolva problema aici 
+    
 }
